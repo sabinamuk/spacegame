@@ -1,0 +1,87 @@
+name: CI Pipeline
+
+on:
+  pull_request:
+    branches: [ main ]
+    types: [ opened, synchronize, reopened ]
+
+permissions:
+  pull-requests: write
+  contents: read
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '9.0.x'
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Check code formatting
+      run: dotnet format --verify-no-changes
+
+    - name: Build
+      run: dotnet build --configuration Release --no-restore
+
+    - name: Test with coverage
+      run: dotnet test --configuration Release --no-build --collect:"XPlat Code Coverage" --results-directory:coverage
+
+    - name: Install ReportGenerator
+      run: dotnet tool install -g dotnet-reportgenerator-globaltool --version 5.3.8
+
+    - name: Generate coverage report
+      run: |
+        reportgenerator \
+        -reports:"coverage/**/coverage.cobertura.xml" \
+        -targetdir:"coveragereport" \
+        -reporttypes:"HtmlInline;MarkdownSummaryGithub"
+
+    - name: Extract coverage percentage
+      id: coverage-percentage
+      run: |
+        COVERAGE_PERCENTAGE=$(grep -E 'Line coverage' coveragereport/SummaryGithub.md | grep -Eo '[0-9]+' | head -1)
+
+        if [ -z "$COVERAGE_PERCENTAGE" ]; then
+          COVERAGE_PERCENTAGE=0
+        fi
+
+        echo "coverage=$COVERAGE_PERCENTAGE" >> $GITHUB_OUTPUT
+        echo "Coverage: $COVERAGE_PERCENTAGE%"
+
+    - name: Set coverage status
+      id: status
+      run: |
+        COVERAGE=${{ steps.coverage-percentage.outputs.coverage }}
+        if [ $COVERAGE -ge 90 ]; then
+          echo "status=PASSED" >> $GITHUB_OUTPUT
+          echo "message= This PR meets the coverage requirement!" >> $GITHUB_OUTPUT
+        else
+          echo "status=FAILED" >> $GITHUB_OUTPUT
+          echo "message= This PR does NOT meet the 90% coverage requirement! Please add more tests!" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Comment PR with coverage report
+      if: github.event_name == 'pull_request'
+      uses: marocchino/sticky-pull-request-comment@v2
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        header: coverage-report
+        message: |
+          ##  Code Coverage Report
+          
+          | Metric | Value |
+          |--------|-------|
+          | **Line Coverage** | ${{ steps.coverage-percentage.outputs.coverage }}% |
+          | **Threshold Required** | 90% |
+          | **Status** | ${{ steps.status.outputs.status }} |
+          
+          ${{ steps.status.outputs.message }}
+          
