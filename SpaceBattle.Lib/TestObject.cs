@@ -1,3 +1,5 @@
+using SpaceBattle.Lib;
+
 public class TestObject : IHasPosition, IHasVelocity
 {
     public Vector Position { get; set; }
