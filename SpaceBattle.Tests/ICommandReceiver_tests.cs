@@ -2,6 +2,7 @@
 using SpaceBattle.Lib;
 using Xunit.Sdk;
 namespace SpaceBattle.Tests;
+
 public class IMessageReceiver_tests
 {
     [Fact]
