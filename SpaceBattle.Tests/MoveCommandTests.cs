@@ -4,7 +4,7 @@ namespace SpaceBattle.Tests;
 
 public class MoveCommandTests
 {
-    
+
     private class MovableFake : IMovable
     {
         public Vector Position { get; set; }
