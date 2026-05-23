@@ -8,18 +8,16 @@ public class RegisterIoCDependencyMacroMoveRotate : ICommand
 {
     public void Execute()
     {
-        // Macro.Move
-        Ioc.Register("Macro.Move", args =>
+        Ioc.Register("Macro.Move", _ =>
         {
             var strategy = new CreateMacroCommandStrategy("Move");
-            return strategy.Resolve(args);
+            return strategy.Resolve(new object[0]);
         });
 
-        // Macro.Rotate
-        Ioc.Register("Macro.Rotate", args =>
+        Ioc.Register("Macro.Rotate", _ =>
         {
             var strategy = new CreateMacroCommandStrategy("Rotate");
-            return strategy.Resolve(args);
+            return strategy.Resolve(new object[0]);
         });
     }
 }
