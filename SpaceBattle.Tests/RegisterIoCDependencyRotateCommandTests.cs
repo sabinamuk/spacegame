@@ -7,27 +7,26 @@ namespace SpaceBattle.Tests;
 public class RegisterIoCDependencyRotateCommandTests
 {
     [Fact]
-    public void Dependency_Is_Resolved_After_Registration()
+    public void Execute_RegisterRotateDependency()
     {
         var rotatingObject =
             new Mock<IRotatingObject>().Object;
 
-        Ioc.Register(
-            "Adapters.IRotatingObject",
+        Ioc.Register("Adapters.IRotatingObject",
             args => rotatingObject);
 
-        var register =
-            new RegisterIoCDependencyRotateCommand();
-
-        register.Execute();
+        new RegisterIoCDependencyRotateCommand()
+            .Execute();
 
         var command =
-            Ioc.Resolve<ICommand>(
+            Ioc.Resolve(
                 "Commands.Rotate",
-                new object());
+                new Dictionary<string, object>
+                {
+                    { "obj", new object() }
+                });
 
         Assert.NotNull(command);
-
         Assert.IsType<RotateCommand>(command);
     }
 }

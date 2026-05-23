@@ -6,16 +6,20 @@ public class RegisterIoCDependencyRotateCommand : ICommand
 {
     public void Execute()
     {
-        Ioc.Register(
-            "Commands.Rotate",
-            args =>
-            {
-                var obj =
-                    Ioc.Resolve<IRotatingObject>(
-                        "Adapters.IRotatingObject",
-                        args[0]);
+        Ioc.Register("Commands.Rotate", args =>
+        {
+            var obj = args["obj"];
 
-                return new RotateCommand(obj);
-            });
+            var dict = new Dictionary<string, object>
+            {
+                { "obj", obj }
+            };
+
+            var rotatingObject =
+                (IRotatingObject)
+                Ioc.Resolve("Adapters.IRotatingObject", dict);
+
+            return new RotateCommand(rotatingObject);
+        });
     }
 }
