@@ -82,11 +82,9 @@ public class MacroMoveRotateTests
 
         new RegisterIoCDependencyMacroMoveRotate().Execute();
 
-        var macro = (ICommand)Ioc.Resolve(
-            "Macro.Move",
-            new Dictionary<string, object>());
-
-        Assert.ThrowsAny<Exception>(() =>
-            macro.Execute());
+        Assert.Throws<KeyNotFoundException>(() =>
+            Ioc.Resolve(
+                "Macro.Move",
+                new Dictionary<string, object>()));
     }
 }
