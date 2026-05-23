@@ -1,4 +1,5 @@
 ﻿using SpaceBattle.Lib;
+using Moq;
 using System.Reflection.Metadata;
 using Xunit;
 
@@ -12,15 +13,15 @@ public class RotateCommandTests
     {
         var mock = new Mock<IRotatingObject>();
 
-        mock.SetupProperty(o => o.Angle, new Angle(1));
+        mock.SetupProperty(o => o.Angle, new Angle(1, 8));
         mock.SetupGet(o => o.AngularVelocity)
-            .Returns(new Angle(1));
+            .Returns(new Angle(1, 8));
 
         var cmd = new RotateCommand(mock.Object);
 
         cmd.Execute();
 
-        Assert.Equal(new Angle(2), mock.Object.Angle);
+        Assert.Equal(new Angle(2, 8), mock.Object.Angle);
     }
 
     [Fact]
@@ -41,7 +42,7 @@ public class RotateCommandTests
     {
         var mock = new Mock<IRotatingObject>();
 
-        mock.SetupProperty(o => o.Angle, new Angle(1));
+        mock.SetupProperty(o => o.Angle, new Angle(1, 8));
 
         mock.SetupGet(o => o.AngularVelocity)
             .Throws(new Exception());
@@ -57,10 +58,10 @@ public class RotateCommandTests
         var mock = new Mock<IRotatingObject>();
 
         mock.SetupGet(o => o.Angle)
-            .Returns(new Angle(1));
+            .Returns(new Angle(1, 8));
 
         mock.SetupGet(o => o.AngularVelocity)
-            .Returns(new Angle(1));
+            .Returns(new Angle(1, 8));
 
         mock.SetupSet(o => o.Angle = It.IsAny<Angle>())
             .Throws(new Exception());
