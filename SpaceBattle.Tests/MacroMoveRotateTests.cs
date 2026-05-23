@@ -25,7 +25,9 @@ public class MacroMoveRotateTests
 
         new RegisterIoCDependencyMacroMoveRotate().Execute();
 
-        var macro = (ICommand)Ioc.Resolve("Macro.Move");
+        var macro = (ICommand)Ioc.Resolve(
+            "Macro.Move",
+            new Dictionary<string, object>());
 
         macro.Execute();
 
@@ -51,7 +53,9 @@ public class MacroMoveRotateTests
 
         new RegisterIoCDependencyMacroMoveRotate().Execute();
 
-        var macro = (ICommand)Ioc.Resolve("Macro.Rotate");
+        var macro = (ICommand)Ioc.Resolve(
+            "Macro.Rotate",
+            new Dictionary<string, object>());
 
         macro.Execute();
 
@@ -64,8 +68,10 @@ public class MacroMoveRotateTests
     {
         new RegisterIoCDependencyMacroMoveRotate().Execute();
 
-        Assert.Throws<Exception>(() =>
-            Ioc.Resolve("Macro.Move"));
+        Assert.ThrowsAny<Exception>(() =>
+            Ioc.Resolve(
+                "Macro.Move",
+                new Dictionary<string, object>()));
     }
 
     [Fact]
@@ -76,9 +82,11 @@ public class MacroMoveRotateTests
 
         new RegisterIoCDependencyMacroMoveRotate().Execute();
 
-        var macro = (ICommand)Ioc.Resolve("Macro.Move");
+        var macro = (ICommand)Ioc.Resolve(
+            "Macro.Move",
+            new Dictionary<string, object>());
 
-        Assert.Throws<Exception>(() => macro.Execute());
+        Assert.ThrowsAny<Exception>(() =>
+            macro.Execute());
     }
-
 }
