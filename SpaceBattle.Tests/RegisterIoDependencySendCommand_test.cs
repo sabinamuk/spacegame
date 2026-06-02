@@ -10,7 +10,7 @@ public class RegisterIoDependencySendCommand_test
     {
         // arrange
         var commandMock = new Mock<ICommand>();
-        var receiverMock = new Mock<IMessageReceiver>();
+        var receiverMock = new Mock<ICommandReceiver>();
 
 
         // act
