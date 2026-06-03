@@ -16,7 +16,7 @@ public class CommandInjectableCommand_test
         sut.Inject(commandMock.Object);
 
         sut.Execute();
-        
+
         // Assert
         commandMock.Verify(c => c.Execute(), Times.Once);
     }
