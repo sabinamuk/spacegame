@@ -4,9 +4,9 @@ namespace SpaceBattle.Lib
     public class SendCommand : ICommand
     {
         private readonly ICommand _command;
-        private readonly IMessageReceiver _receiver;
+        private readonly ICommandReceiver _receiver;
 
-        public SendCommand(ICommand command, IMessageReceiver receiver)
+        public SendCommand(ICommand command, ICommandReceiver receiver)
         {
             _command = command;
             _receiver = receiver;

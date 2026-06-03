@@ -3,14 +3,14 @@ using SpaceBattle.Lib;
 using Xunit.Sdk;
 namespace SpaceBattle.Tests;
 
-public class IMessageReceiver_tests
+public class ICommandReceiver_tests
 {
     [Fact]
-    public void IMessageReceiver_SendCommandExecuteCallsReceiveWithCorrectCommand()
+    public void ICommandReceiver_SendCommandExecuteCallsReceiveWithCorrectCommand()
     {
         //Arrange
         var mockCommand = new Mock<ICommand>();
-        var mockReceiver = new Mock<IMessageReceiver>();
+        var mockReceiver = new Mock<ICommandReceiver>();
         var sendCommand = new SendCommand(mockCommand.Object, mockReceiver.Object);
 
         //Act
@@ -18,7 +18,7 @@ public class IMessageReceiver_tests
         //Assert
         mockReceiver.Verify(r => r.Receive(mockCommand.Object), Times.Once); //Проверяем историю вызовов, что метод Receive был вызван один раз, а в аргументе правильная команда
     }
-    class Faulty_Receiver : IMessageReceiver
+    class Faulty_Receiver : ICommandReceiver
     {
         public void Receive(ICommand command)
         {
@@ -27,7 +27,7 @@ public class IMessageReceiver_tests
         }
     }
     [Fact]
-    public void IMessageReceiver_ThrowsExceptionWhenReceiverFails()
+    public void ICommandReceiver_ThrowsExceptionWhenReceiverFails()
     {
         //Arrange
         var bad_receiver = new Faulty_Receiver();
@@ -44,6 +44,6 @@ public class IMessageReceiver_tests
             error_returned = true;
         }
         //Assert
-        Assert.True(error_returned, "Ожидали получить InvalidOperationException при вызове Execute у SendCommand с IMessageReceiver, всегда возвращающим исключение");
+        Assert.True(error_returned, "Ожидали получить InvalidOperationException при вызове Execute у SendCommand с ICommandReceiver, всегда возвращающим исключение");
     }
 }
