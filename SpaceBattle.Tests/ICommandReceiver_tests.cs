@@ -1,4 +1,4 @@
-﻿using Moq;
+using Moq;
 using SpaceBattle.Lib;
 using Xunit.Sdk;
 namespace SpaceBattle.Tests;
