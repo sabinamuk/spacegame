@@ -1,3 +1,5 @@
+using Ioc = App.Ioc;
+
 namespace SpaceBattle.Lib;
 
 public class StartCommand : ICommand
@@ -15,10 +17,9 @@ public class StartCommand : ICommand
         var queue = (ICommandReceiver)_order["queue"];
         var gameObject = (IDictionary<string, object>)_order["gameObject"];
 
-        var macro = (ICommand)Ioc.Resolve("Macro." + opType, new Dictionary<string, object>());
+        var macro = Ioc.Resolve<ICommand>("Macro." + opType);
 
-        var injectable = (CommandInjectableCommand)Ioc.Resolve(
-            "Commands.CommandInjectable", new Dictionary<string, object>());
+        var injectable = Ioc.Resolve<CommandInjectableCommand>("Commands.CommandInjectable");
         injectable.Inject(macro);
 
         gameObject["repeatable" + opType] = injectable;

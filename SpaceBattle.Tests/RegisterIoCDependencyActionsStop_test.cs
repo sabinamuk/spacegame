@@ -1,3 +1,4 @@
+using Ioc = App.Ioc;
 using SpaceBattle.Lib;
 
 namespace SpaceBattle.Tests;
@@ -6,6 +7,10 @@ public class RegisterIoCDependencyActionsStop_test
 {
     public RegisterIoCDependencyActionsStop_test()
     {
+        new App.Scopes.InitCommand().Execute();
+        new App.Scopes.ClearCurrentScopeCommand().Execute();
+        var scope = Ioc.Resolve<object>("IoC.Scope.Create");
+        Ioc.Resolve<App.ICommand>("IoC.Scope.Current.Set", scope).Execute();
         new RegisterIoCDependencyActionsStop().Execute();
     }
 
@@ -14,7 +19,7 @@ public class RegisterIoCDependencyActionsStop_test
     {
         IDictionary<string, object> order = new Dictionary<string, object>();
 
-        var result = Ioc.Resolve("Actions.Stop", new Dictionary<string, object>(order));
+        var result = Ioc.Resolve<ICommand>("Actions.Stop", order);
 
         Assert.IsAssignableFrom<ICommand>(result);
     }

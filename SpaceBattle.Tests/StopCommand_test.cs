@@ -1,3 +1,4 @@
+using Ioc = App.Ioc;
 using SpaceBattle.Lib;
 using Moq;
 
@@ -7,6 +8,10 @@ public class StopCommand_test
 {
     public StopCommand_test()
     {
+        new App.Scopes.InitCommand().Execute();
+        new App.Scopes.ClearCurrentScopeCommand().Execute();
+        var scope = Ioc.Resolve<object>("IoC.Scope.Create");
+        Ioc.Resolve<App.ICommand>("IoC.Scope.Current.Set", scope).Execute();
         new RegisterIoCDependencyActionsStop().Execute();
     }
 
@@ -25,7 +30,7 @@ public class StopCommand_test
             ["gameObject"] = gameObject
         };
 
-        ((ICommand)Ioc.Resolve("Actions.Stop", order)).Execute();
+        Ioc.Resolve<ICommand>("Actions.Stop", order).Execute();
 
         injectable.Verify(i => i.Inject(It.IsAny<EmptyCommand>()), Times.Once);
     }
@@ -42,6 +47,6 @@ public class StopCommand_test
         };
 
         Assert.Throws<KeyNotFoundException>(() =>
-            ((ICommand)Ioc.Resolve("Actions.Stop", order)).Execute());
+            Ioc.Resolve<ICommand>("Actions.Stop", order).Execute());
     }
 }

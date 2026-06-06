@@ -1,9 +1,13 @@
+using Ioc = App.Ioc;
+
 namespace SpaceBattle.Lib;
 
 public class RegisterDependencyCommandInjectableCommand : ICommand
 {
     public void Execute()
     {
-        Ioc.Register("Commands.CommandInjectable", _ => new CommandInjectableCommand());
+        Ioc.Resolve<App.ICommand>("IoC.Register", "Commands.CommandInjectable",
+            (object[] _) => new CommandInjectableCommand()
+        ).Execute();
     }
 }

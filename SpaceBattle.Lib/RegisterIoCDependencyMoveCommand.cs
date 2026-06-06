@@ -1,4 +1,4 @@
-using SpaceBattle.Lib;
+using Ioc = App.Ioc;
 
 namespace SpaceBattle.Lib;
 
@@ -6,12 +6,10 @@ public class RegisterIoCDependencyMoveCommand : ICommand
 {
     public void Execute()
     {
-        Ioc.Register("Commands.Move", args =>
+        Ioc.Resolve<App.ICommand>("IoC.Register", "Commands.Move", (object[] args) =>
         {
-            var obj = args["obj"];
-            var dict = new Dictionary<string, object> { { "obj", obj } };
-            var movable = (IMovable)Ioc.Resolve("Adapters.IMovingObject", dict);
+            var movable = Ioc.Resolve<IMovable>("Adapters.IMovingObject", args[0]);
             return new MoveCommand(movable);
-        });
+        }).Execute();
     }
 }

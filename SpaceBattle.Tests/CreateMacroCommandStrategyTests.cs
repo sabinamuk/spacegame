@@ -1,37 +1,36 @@
-using Xunit;
+using Ioc = App.Ioc;
 using Moq;
-using System.Collections.Generic;
-using System.Linq;
 using SpaceBattle.Lib;
 
 namespace SpaceBattle.Tests;
 
 public class CreateMacroCommandStrategyTests
 {
+    public CreateMacroCommandStrategyTests()
+    {
+        new App.Scopes.InitCommand().Execute();
+        new App.Scopes.ClearCurrentScopeCommand().Execute();
+        var scope = Ioc.Resolve<object>("IoC.Scope.Create");
+        Ioc.Resolve<App.ICommand>("IoC.Scope.Current.Set", scope).Execute();
+    }
+
     [Fact]
     public void Resolve_Returns_MacroCommand()
     {
-        Ioc.Register(
-            "Specs.Test",
-            _ => new List<string>
-            {
-                "Commands.A",
-                "Commands.B"
-            });
+        Ioc.Resolve<App.ICommand>("IoC.Register", "Specs.Test",
+            (object[] _) => new List<string> { "Commands.A", "Commands.B" }
+        ).Execute();
 
-        Ioc.Register(
-            "Commands.A",
-            _ => new Mock<ICommand>().Object);
+        Ioc.Resolve<App.ICommand>("IoC.Register", "Commands.A",
+            (object[] _) => new Mock<ICommand>().Object
+        ).Execute();
 
-        Ioc.Register(
-            "Commands.B",
-            _ => new Mock<ICommand>().Object);
+        Ioc.Resolve<App.ICommand>("IoC.Register", "Commands.B",
+            (object[] _) => new Mock<ICommand>().Object
+        ).Execute();
 
-        var strategy =
-            new CreateMacroCommandStrategy("Test");
-
-        var result =
-            strategy.Resolve(new object[0]);
+        var strategy = new CreateMacroCommandStrategy("Test");
+        var result = strategy.Resolve(new object[0]);
 
         Assert.IsType<MacroCommand>(result);
     }

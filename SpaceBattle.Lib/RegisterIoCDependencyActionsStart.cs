@@ -1,3 +1,5 @@
+using Ioc = App.Ioc;
+
 namespace SpaceBattle.Lib;
 
 public class RegisterIoCDependencyActionsStart : ICommand
@@ -9,6 +11,8 @@ public class RegisterIoCDependencyActionsStart : ICommand
         new RegisterIoCDependencySendCommand().Execute();
         new RegisterIoCDependencyMacroMoveRotate().Execute();
 
-        Ioc.Register("Actions.Start", args => new StartCommand(args));
+        Ioc.Resolve<App.ICommand>("IoC.Register", "Actions.Start",
+            (object[] args) => new StartCommand((IDictionary<string, object>)args[0])
+        ).Execute();
     }
 }

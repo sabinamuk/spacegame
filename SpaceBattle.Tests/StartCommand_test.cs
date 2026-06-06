@@ -1,3 +1,4 @@
+using Ioc = App.Ioc;
 using SpaceBattle.Lib;
 using Moq;
 
@@ -7,11 +8,20 @@ public class StartCommand_test
 {
     public StartCommand_test()
     {
+        new App.Scopes.InitCommand().Execute();
+        new App.Scopes.ClearCurrentScopeCommand().Execute();
+        var scope = Ioc.Resolve<object>("IoC.Scope.Create");
+        Ioc.Resolve<App.ICommand>("IoC.Scope.Current.Set", scope).Execute();
+
         new RegisterIoCDependencyActionsStart().Execute();
 
         var moveCmd = new Mock<ICommand>();
-        Ioc.Register("Specs.Move", _ => (object)new List<string> { "Commands.Move" });
-        Ioc.Register("Commands.Move", _ => moveCmd.Object);
+        Ioc.Resolve<App.ICommand>("IoC.Register", "Specs.Move",
+            (object[] _) => (object)new List<string> { "Commands.Move" }
+        ).Execute();
+        Ioc.Resolve<App.ICommand>("IoC.Register", "Commands.Move",
+            (object[] _) => moveCmd.Object
+        ).Execute();
     }
 
     [Fact]
@@ -27,7 +37,7 @@ public class StartCommand_test
             ["gameObject"] = gameObject
         };
 
-        ((ICommand)Ioc.Resolve("Actions.Start", order)).Execute();
+        Ioc.Resolve<ICommand>("Actions.Start", order).Execute();
 
         Assert.True(gameObject.ContainsKey("repeatableMove"));
         Assert.IsType<CommandInjectableCommand>(gameObject["repeatableMove"]);
