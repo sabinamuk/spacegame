@@ -1,4 +1,4 @@
-using SpaceBattle.Lib;
+using System.Collections.Generic;
 
 namespace SpaceBattle.Lib;
 
@@ -15,10 +15,12 @@ public class RegisterIoCDependencyMoveCommand : ICommand
                 { "obj", obj }
             };
 
-            var position = (IHasPosition)Ioc.Resolve("Adapters.IMovingObject", dict);
-            var velocity = (IHasVelocity)Ioc.Resolve("Adapters.IMovingObject", dict);
+            var movable =
+                (IMovable)Ioc.Resolve(
+                    "Adapters.IMovingObject",
+                    dict);
 
-            return new MoveCommand(position, velocity);
+            return new MoveCommand(movable);
         });
     }
 }
