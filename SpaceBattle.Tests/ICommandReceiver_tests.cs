@@ -1,6 +1,5 @@
 using Moq;
 using SpaceBattle.Lib;
-using Xunit.Sdk;
 namespace SpaceBattle.Tests;
 
 public class ICommandReceiver_tests

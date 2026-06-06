@@ -1,6 +1,6 @@
-using Ioc = App.Ioc;
-using SpaceBattle.Lib;
 using Moq;
+using SpaceBattle.Lib;
+using Ioc = App.Ioc;
 
 namespace SpaceBattle.Tests;
 

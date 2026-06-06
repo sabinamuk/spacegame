@@ -1,5 +1,3 @@
-using System.Linq;
-
 namespace SpaceBattle.Lib;
 
 public class Vector
