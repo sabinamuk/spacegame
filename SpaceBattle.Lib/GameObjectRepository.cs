@@ -3,17 +3,17 @@ namespace SpaceBattle.Lib;
 public class GameObjectRepository
     : IGameObjectRepository
 {
-    private readonly Dictionary<string, object>
+    private readonly Dictionary<string, IGameObject>
         objects = new();
 
     public void Add(
         string id,
-        object gameObject)
+        IGameObject gameObject)
     {
         objects[id] = gameObject;
     }
 
-    public object Get(
+    public IGameObject Get(
         string id)
     {
         return objects[id];
