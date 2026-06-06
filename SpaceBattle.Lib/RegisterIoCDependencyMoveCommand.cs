@@ -9,16 +9,9 @@ public class RegisterIoCDependencyMoveCommand : ICommand
         Ioc.Register("Commands.Move", args =>
         {
             var obj = args["obj"];
-
-            var dict = new Dictionary<string, object>
-            {
-                { "obj", obj }
-            };
-
-            var position = (IHasPosition)Ioc.Resolve("Adapters.IMovingObject", dict);
-            var velocity = (IHasVelocity)Ioc.Resolve("Adapters.IMovingObject", dict);
-
-            return new MoveCommand(position, velocity);
+            var dict = new Dictionary<string, object> { { "obj", obj } };
+            var movable = (IMovable)Ioc.Resolve("Adapters.IMovingObject", dict);
+            return new MoveCommand(movable);
         });
     }
 }
