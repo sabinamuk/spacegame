@@ -1,6 +1,7 @@
 using SpaceBattle.Lib;
 
-public interface IHasPosition
+public interface IMovable
 {
     Vector Position { get; set; }
+    Vector Velocity { get; }
 }

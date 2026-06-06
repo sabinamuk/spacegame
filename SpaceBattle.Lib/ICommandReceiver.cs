@@ -1,4 +1,3 @@
-﻿
 namespace SpaceBattle.Lib;
 
 public interface ICommandReceiver

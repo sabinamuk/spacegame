@@ -2,23 +2,21 @@ namespace SpaceBattle.Lib;
 
 public class MoveCommand : ICommand
 {
-    private readonly IHasPosition _position;
-    private readonly IHasVelocity _velocity;
+    private readonly IMovable _movable;
 
-    public MoveCommand(IHasPosition position, IHasVelocity velocity)
+    public MoveCommand(IMovable movable)
     {
-        _position = position;
-        _velocity = velocity;
+        _movable = movable ?? throw new ArgumentNullException(nameof(movable));
     }
 
     public void Execute()
     {
-        if (_position == null)
-            throw new ArgumentNullException(nameof(_position));
+        if (_movable.Position is null)
+            throw new ArgumentNullException(nameof(_movable.Position));
 
-        if (_velocity == null)
-            throw new ArgumentNullException(nameof(_velocity));
+        if (_movable.Velocity is null)
+            throw new ArgumentNullException(nameof(_movable.Velocity));
 
-        _position.Position = _position.Position + _velocity.Velocity;
+        _movable.Position = _movable.Position + _movable.Velocity;
     }
 }

@@ -1,4 +1,4 @@
-﻿using Moq;
+using Moq;
 using SpaceBattle.Lib;
 using Xunit.Sdk;
 namespace SpaceBattle.Tests;
@@ -46,4 +46,3 @@ public class ICommandReceiver_tests
         //Assert
         Assert.True(error_returned, "Ожидали получить InvalidOperationException при вызове Execute у SendCommand с ICommandReceiver, всегда возвращающим исключение");
     }
-}
