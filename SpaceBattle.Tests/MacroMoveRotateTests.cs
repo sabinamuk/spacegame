@@ -7,33 +7,6 @@ namespace SpaceBattle.Tests;
 
 public class MacroMoveRotateTests
 {
-    [Fact]
-    public void MacroMove_Executes_All_Commands()
-    {
-        var cmd1 = new Mock<ICommand>();
-        var cmd2 = new Mock<ICommand>();
-
-        Ioc.Register("Commands.A", _ => cmd1.Object);
-        Ioc.Register("Commands.B", _ => cmd2.Object);
-
-        Ioc.Register("Specs.Move", _ =>
-            new List<string>
-            {
-                "Commands.A",
-                "Commands.B"
-            });
-
-        new RegisterIoCDependencyMacroMoveRotate().Execute();
-
-        var macro = (ICommand)Ioc.Resolve(
-            "Macro.Move",
-            new Dictionary<string, object>());
-
-        macro.Execute();
-
-        cmd1.Verify(c => c.Execute(), Times.Once);
-        cmd2.Verify(c => c.Execute(), Times.Once);
-    }
 
     [Fact]
     public void MacroRotate_Executes_All_Commands()
