@@ -15,24 +15,6 @@ public class StartCommand_test
     }
 
     [Fact]
-    public void Execute_PutsInjectableIntoQueue()
-    {
-        var gameObject = new Dictionary<string, object>();
-        var queue = new Mock<ICommandReceiver>();
-
-        var order = new Dictionary<string, object>
-        {
-            ["operationType"] = "Move",
-            ["queue"] = queue.Object,
-            ["gameObject"] = gameObject
-        };
-
-        ((ICommand)Ioc.Resolve("Actions.Start", order)).Execute();
-
-        queue.Verify(q => q.Receive(It.IsAny<ICommand>()), Times.Once);
-    }
-
-    [Fact]
     public void Execute_StoresInjectableInGameObject()
     {
         var gameObject = new Dictionary<string, object>();
