@@ -1,7 +1,4 @@
-﻿using System.Linq;
-using System;
-
-namespace SpaceBattle.Lib;
+﻿namespace SpaceBattle.Lib;
 
 
 public class Angle

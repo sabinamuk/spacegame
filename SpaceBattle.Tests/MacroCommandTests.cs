@@ -1,5 +1,4 @@
 using Moq;
-using Xunit;
 using SpaceBattle.Lib;
 
 namespace SpaceBattle.Tests;

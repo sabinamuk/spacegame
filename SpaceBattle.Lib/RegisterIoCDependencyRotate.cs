@@ -1,4 +1,4 @@
-using SpaceBattle.Lib;
+using Ioc = App.Ioc;
 
 namespace SpaceBattle.Lib;
 
@@ -6,20 +6,10 @@ public class RegisterIoCDependencyRotateCommand : ICommand
 {
     public void Execute()
     {
-        Ioc.Register("Commands.Rotate", args =>
+        Ioc.Resolve<App.ICommand>("IoC.Register", "Commands.Rotate", (object[] args) =>
         {
-            var obj = args["obj"];
-
-            var dict = new Dictionary<string, object>
-            {
-                { "obj", obj }
-            };
-
-            var rotatingObject =
-                (IRotatingObject)
-                Ioc.Resolve("Adapters.IRotatingObject", dict);
-
+            var rotatingObject = Ioc.Resolve<IRotatingObject>("Adapters.IRotatingObject", args[0]);
             return new RotateCommand(rotatingObject);
-        });
+        }).Execute();
     }
 }

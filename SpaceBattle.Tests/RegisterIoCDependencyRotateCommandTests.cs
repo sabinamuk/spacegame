@@ -1,30 +1,31 @@
-﻿using Moq;
-using Xunit;
+using Moq;
 using SpaceBattle.Lib;
+using Ioc = App.Ioc;
 
 namespace SpaceBattle.Tests;
 
 public class RegisterIoCDependencyRotateCommandTests
 {
+    public RegisterIoCDependencyRotateCommandTests()
+    {
+        new App.Scopes.InitCommand().Execute();
+        new App.Scopes.ClearCurrentScopeCommand().Execute();
+        var scope = Ioc.Resolve<object>("IoC.Scope.Create");
+        Ioc.Resolve<App.ICommand>("IoC.Scope.Current.Set", scope).Execute();
+    }
+
     [Fact]
     public void Execute_RegisterRotateDependency()
     {
-        var rotatingObject =
-            new Mock<IRotatingObject>().Object;
+        var rotatingObject = new Mock<IRotatingObject>().Object;
 
-        Ioc.Register("Adapters.IRotatingObject",
-            args => rotatingObject);
+        Ioc.Resolve<App.ICommand>("IoC.Register", "Adapters.IRotatingObject",
+            (object[] _) => rotatingObject
+        ).Execute();
 
-        new RegisterIoCDependencyRotateCommand()
-            .Execute();
+        new RegisterIoCDependencyRotateCommand().Execute();
 
-        var command =
-            Ioc.Resolve(
-                "Commands.Rotate",
-                new Dictionary<string, object>
-                {
-                    { "obj", new object() }
-                });
+        var command = Ioc.Resolve<ICommand>("Commands.Rotate", new object());
 
         Assert.NotNull(command);
         Assert.IsType<RotateCommand>(command);

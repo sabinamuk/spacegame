@@ -1,7 +1,5 @@
-﻿using SpaceBattle.Lib;
-using Moq;
-using System.Reflection.Metadata;
-using Xunit;
+﻿using Moq;
+using SpaceBattle.Lib;
 
 
 namespace SpaceBattle.Tests;

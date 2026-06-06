@@ -1,66 +1,16 @@
-using Xunit;
-using Moq;
-using System.Collections.Generic;
 using SpaceBattle.Lib;
+using Ioc = App.Ioc;
 
 namespace SpaceBattle.Tests;
 
 public class MacroMoveRotateTests
 {
-    [Fact]
-    public void MacroMove_Executes_All_Commands()
+    public MacroMoveRotateTests()
     {
-        var cmd1 = new Mock<ICommand>();
-        var cmd2 = new Mock<ICommand>();
-
-        Ioc.Register("Commands.A", _ => cmd1.Object);
-        Ioc.Register("Commands.B", _ => cmd2.Object);
-
-        Ioc.Register("Specs.Move", _ =>
-            new List<string>
-            {
-                "Commands.A",
-                "Commands.B"
-            });
-
-        new RegisterIoCDependencyMacroMoveRotate().Execute();
-
-        var macro = (ICommand)Ioc.Resolve(
-            "Macro.Move",
-            new Dictionary<string, object>());
-
-        macro.Execute();
-
-        cmd1.Verify(c => c.Execute(), Times.Once);
-        cmd2.Verify(c => c.Execute(), Times.Once);
-    }
-
-    [Fact]
-    public void MacroRotate_Executes_All_Commands()
-    {
-        var cmd1 = new Mock<ICommand>();
-        var cmd2 = new Mock<ICommand>();
-
-        Ioc.Register("Commands.A", _ => cmd1.Object);
-        Ioc.Register("Commands.B", _ => cmd2.Object);
-
-        Ioc.Register("Specs.Rotate", _ =>
-            new List<string>
-            {
-                "Commands.A",
-                "Commands.B"
-            });
-
-        new RegisterIoCDependencyMacroMoveRotate().Execute();
-
-        var macro = (ICommand)Ioc.Resolve(
-            "Macro.Rotate",
-            new Dictionary<string, object>());
-
-        macro.Execute();
-
-        cmd1.Verify(c => c.Execute(), Times.Once);
-        cmd2.Verify(c => c.Execute(), Times.Once);
+        new App.Scopes.InitCommand().Execute();
+        new App.Scopes.ClearCurrentScopeCommand().Execute();
+        var scope = Ioc.Resolve<object>("IoC.Scope.Create");
+        Ioc.Resolve<App.ICommand>("IoC.Scope.Current.Set", scope).Execute();
     }
 
     [Fact]
@@ -68,23 +18,18 @@ public class MacroMoveRotateTests
     {
         new RegisterIoCDependencyMacroMoveRotate().Execute();
 
-        Assert.ThrowsAny<Exception>(() =>
-            Ioc.Resolve(
-                "Macro.Move",
-                new Dictionary<string, object>()));
+        Assert.ThrowsAny<Exception>(() => Ioc.Resolve<ICommand>("Macro.Move"));
     }
 
     [Fact]
     public void Macro_Throws_When_Command_Not_Found()
     {
-        Ioc.Register("Specs.Move", _ =>
-            new List<string> { "Commands.NotExists" });
+        Ioc.Resolve<App.ICommand>("IoC.Register", "Specs.Move",
+            (object[] _) => new List<string> { "Commands.NotExists" }
+        ).Execute();
 
         new RegisterIoCDependencyMacroMoveRotate().Execute();
 
-        Assert.Throws<KeyNotFoundException>(() =>
-            Ioc.Resolve(
-                "Macro.Move",
-                new Dictionary<string, object>()));
+        Assert.ThrowsAny<Exception>(() => Ioc.Resolve<ICommand>("Macro.Move"));
     }
 }

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Reflection.Metadata;
-using System.Windows.Input;
-
-namespace SpaceBattle.Lib;
+﻿namespace SpaceBattle.Lib;
 
 
 public interface IRotatingObject
