@@ -1,29 +1,20 @@
 namespace SpaceBattle.Lib;
 
-public class LookupCollisionDetector : ICollisionDetector
+public class CollisionDetector : ICollisionDetector
 {
-    private readonly IReadOnlyDictionary<(string, string, int, int), bool> _table;
+    private readonly ICollisionMap _map;
 
-    public LookupCollisionDetector(IReadOnlyDictionary<(string, string, int, int), bool> table)
+    public CollisionDetector(ICollisionMap map)
     {
-        _table = table;
+        _map = map;
     }
 
-    public bool Detect(IDictionary<string, object> a, IDictionary<string, object> b)
-    {
-        var typeA = (string)a["type"];
-        var typeB = (string)b["type"];
-        var posA = (Vector)a["position"];
-        var posB = (Vector)b["position"];
-        var dx = posA[0] - posB[0];
-        var dy = posA[1] - posB[1];
+    public bool Collides(ICollidable a, ICollidable b)
+        => CollidesAt(a.GetShapeId(), b.GetShapeId(), a.GetPosition(), b.GetPosition())
+        || CollidesAt(a.GetShapeId(), b.GetShapeId(),
+               a.GetPosition() + a.GetVelocity(),
+               b.GetPosition() + b.GetVelocity());
 
-        if (_table.TryGetValue((typeA, typeB, dx, dy), out var result))
-            return result;
-
-        if (_table.TryGetValue((typeB, typeA, -dx, -dy), out result))
-            return result;
-
-        return false;
-    }
+    private bool CollidesAt(string shapeA, string shapeB, Vector posA, Vector posB)
+        => _map.Contains(shapeA, shapeB, posB[0] - posA[0], posB[1] - posA[1]);
 }
