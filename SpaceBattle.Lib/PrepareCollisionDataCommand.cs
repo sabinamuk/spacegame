@@ -16,7 +16,7 @@ public class PrepareCollisionDataCommand : ICommand
     public void Execute()
     {
         foreach (var cellA in _shapeA.Cells)
-        foreach (var cellB in _shapeB.Cells)
-            _map.Add(_shapeA.ShapeId, _shapeB.ShapeId, cellA.X - cellB.X, cellA.Y - cellB.Y);
+            foreach (var cellB in _shapeB.Cells)
+                _map.Add(_shapeA.ShapeId, _shapeB.ShapeId, cellA.X - cellB.X, cellA.Y - cellB.Y);
     }
 }

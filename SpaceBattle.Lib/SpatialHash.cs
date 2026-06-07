@@ -36,11 +36,11 @@ public class SpatialHash : ISpatialHash
     {
         var (cx, cy) = GetCell(position);
         for (var dx = -1; dx <= 1; dx++)
-        for (var dy = -1; dy <= 1; dy++)
-        {
-            if (_cells.TryGetValue((cx + dx, cy + dy), out var list))
-                foreach (var entry in list)
-                    yield return entry;
-        }
+            for (var dy = -1; dy <= 1; dy++)
+            {
+                if (_cells.TryGetValue((cx + dx, cy + dy), out var list))
+                    foreach (var entry in list)
+                        yield return entry;
+            }
     }
 }
