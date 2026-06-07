@@ -34,7 +34,6 @@ public class CollisionDetectorTests
         map.Add("ship", "torpedo", 0, 0);
         var detector = new CollisionDetector(map);
 
-        // ship=(0,0) vel=(2,0), torpedo=(3,0) vel=(-1,0) → следующий тик: оба в (2,0)
         var a = MakeCollidable("ship", 0, 0, 2, 0);
         var b = MakeCollidable("torpedo", 3, 0, -1, 0);
 
