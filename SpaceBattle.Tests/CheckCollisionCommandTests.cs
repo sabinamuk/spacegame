@@ -21,12 +21,12 @@ public class CheckCollisionCommandTests
         var other = MakeCollidable("torpedo");
         var onCollision = new Mock<ICommand>();
         var detector = new Mock<ICollisionDetector>();
-        var repo = new Mock<ICollidableRepository>();
+        var spatialHash = new Mock<ISpatialHash>();
 
-        repo.Setup(r => r.GetAll()).Returns([("other-1", other.Object)]);
+        spatialHash.Setup(h => h.GetNearby(It.IsAny<Vector>())).Returns([("other-1", other.Object)]);
         detector.Setup(d => d.Collides(self.Object, other.Object)).Returns(true);
 
-        new CheckCollisionCommand("self-id", self.Object, repo.Object, detector.Object, onCollision.Object).Execute();
+        new CheckCollisionCommand("self-id", self.Object, spatialHash.Object, detector.Object, onCollision.Object).Execute();
 
         onCollision.Verify(c => c.Execute(), Times.Once);
     }
@@ -38,12 +38,12 @@ public class CheckCollisionCommandTests
         var other = MakeCollidable("torpedo");
         var onCollision = new Mock<ICommand>();
         var detector = new Mock<ICollisionDetector>();
-        var repo = new Mock<ICollidableRepository>();
+        var spatialHash = new Mock<ISpatialHash>();
 
-        repo.Setup(r => r.GetAll()).Returns([("other-1", other.Object)]);
+        spatialHash.Setup(h => h.GetNearby(It.IsAny<Vector>())).Returns([("other-1", other.Object)]);
         detector.Setup(d => d.Collides(It.IsAny<ICollidable>(), It.IsAny<ICollidable>())).Returns(false);
 
-        new CheckCollisionCommand("self-id", self.Object, repo.Object, detector.Object, onCollision.Object).Execute();
+        new CheckCollisionCommand("self-id", self.Object, spatialHash.Object, detector.Object, onCollision.Object).Execute();
 
         onCollision.Verify(c => c.Execute(), Times.Never);
     }
@@ -54,11 +54,11 @@ public class CheckCollisionCommandTests
         var self = MakeCollidable();
         var onCollision = new Mock<ICommand>();
         var detector = new Mock<ICollisionDetector>();
-        var repo = new Mock<ICollidableRepository>();
+        var spatialHash = new Mock<ISpatialHash>();
 
-        repo.Setup(r => r.GetAll()).Returns([("self-id", self.Object)]);
+        spatialHash.Setup(h => h.GetNearby(It.IsAny<Vector>())).Returns([("self-id", self.Object)]);
 
-        new CheckCollisionCommand("self-id", self.Object, repo.Object, detector.Object, onCollision.Object).Execute();
+        new CheckCollisionCommand("self-id", self.Object, spatialHash.Object, detector.Object, onCollision.Object).Execute();
 
         detector.Verify(d => d.Collides(It.IsAny<ICollidable>(), It.IsAny<ICollidable>()), Times.Never);
     }
@@ -71,13 +71,13 @@ public class CheckCollisionCommandTests
         var other2 = MakeCollidable("asteroid");
         var onCollision = new Mock<ICommand>();
         var detector = new Mock<ICollisionDetector>();
-        var repo = new Mock<ICollidableRepository>();
+        var spatialHash = new Mock<ISpatialHash>();
 
-        repo.Setup(r => r.GetAll()).Returns([("obj-1", other1.Object), ("obj-2", other2.Object)]);
+        spatialHash.Setup(h => h.GetNearby(It.IsAny<Vector>())).Returns([("obj-1", other1.Object), ("obj-2", other2.Object)]);
         detector.Setup(d => d.Collides(self.Object, other1.Object)).Returns(true);
         detector.Setup(d => d.Collides(self.Object, other2.Object)).Returns(true);
 
-        new CheckCollisionCommand("self-id", self.Object, repo.Object, detector.Object, onCollision.Object).Execute();
+        new CheckCollisionCommand("self-id", self.Object, spatialHash.Object, detector.Object, onCollision.Object).Execute();
 
         onCollision.Verify(c => c.Execute(), Times.Once);
     }
