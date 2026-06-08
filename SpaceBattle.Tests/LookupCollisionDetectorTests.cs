@@ -15,10 +15,10 @@ public class CollisionDetectorTests
     }
 
     [Fact]
-    public void Collides_CurrentPositionCollides_ReturnsTrue()
+    public void Collides_StaticOverlap_ReturnsTrue()
     {
         var map = new CollisionMap();
-        map.Add("ship", "torpedo", 0, 0);
+        map.Add("ship", "torpedo", 0, 0, 0, 0);
         var detector = new CollisionDetector(map);
 
         var a = MakeCollidable("ship", 5, 5, 0, 0);
@@ -28,44 +28,31 @@ public class CollisionDetectorTests
     }
 
     [Fact]
-    public void Collides_NextPositionCollides_ReturnsTrue()
+    public void Collides_FastObjectTunnels_ReturnsTrue()
     {
+        var shapeA = new ShapeFootprint("torpedo", [(0, 0)]);
+        var shapeB = new ShapeFootprint("ship", [(0, 0)]);
         var map = new CollisionMap();
-        map.Add("ship", "torpedo", 0, 0);
-        var detector = new CollisionDetector(map);
 
-        var a = MakeCollidable("ship", 0, 0, 2, 0);
-        var b = MakeCollidable("torpedo", 3, 0, -1, 0);
+        new PrepareCollisionDataCommand(shapeA, shapeB, map, maxVelocity: 10).Execute();
 
-        Assert.True(detector.Collides(a.Object, b.Object));
+        var torpedo = MakeCollidable("torpedo", 0, 0, 10, 0);
+        var ship = MakeCollidable("ship", 5, 0, 0, 0);
+
+        Assert.True(new CollisionDetector(map).Collides(torpedo.Object, ship.Object));
     }
 
     [Fact]
-    public void Collides_NeitherCurrentNorNext_ReturnsFalse()
+    public void Collides_NoCollision_ReturnsFalse()
     {
         var map = new CollisionMap();
-        map.Add("ship", "torpedo", 0, 0);
+        map.Add("ship", "torpedo", 0, 0, 0, 0);
         var detector = new CollisionDetector(map);
 
         var a = MakeCollidable("ship", 0, 0, 1, 0);
         var b = MakeCollidable("torpedo", 10, 0, 0, 0);
 
         Assert.False(detector.Collides(a.Object, b.Object));
-    }
-
-    [Fact]
-    public void Collides_ChecksBothCurrentAndNext()
-    {
-        var mockMap = new Mock<ICollisionMap>();
-        mockMap.Setup(m => m.Contains(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>())).Returns(false);
-        var detector = new CollisionDetector(mockMap.Object);
-
-        var a = MakeCollidable("ship", 0, 0, 1, 0);
-        var b = MakeCollidable("torpedo", 2, 0, 0, 0);
-
-        detector.Collides(a.Object, b.Object);
-
-        mockMap.Verify(m => m.Contains(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>()), Times.Exactly(2));
     }
 }
 
@@ -76,36 +63,36 @@ public class CollisionMapTests
     [Fact]
     public void Contains_AfterAdd_ReturnsTrue()
     {
-        _map.Add("ship", "torpedo", 0, 0);
-        Assert.True(_map.Contains("ship", "torpedo", 0, 0));
+        _map.Add("ship", "torpedo", 0, 0, 0, 0);
+        Assert.True(_map.Contains("ship", "torpedo", 0, 0, 0, 0));
     }
 
     [Fact]
     public void Contains_NotAdded_ReturnsFalse()
     {
-        Assert.False(_map.Contains("ship", "torpedo", 5, 5));
+        Assert.False(_map.Contains("ship", "torpedo", 5, 5, 0, 0));
     }
 
     [Fact]
     public void Contains_Symmetric_ReturnsTrue()
     {
-        _map.Add("ship", "torpedo", 3, -2);
-        Assert.True(_map.Contains("torpedo", "ship", -3, 2));
+        _map.Add("ship", "torpedo", 3, -2, 1, 0);
+        Assert.True(_map.Contains("torpedo", "ship", -3, 2, -1, 0));
     }
 
     [Fact]
     public void Add_Duplicate_DoesNotDuplicate()
     {
-        _map.Add("A", "B", 0, 0);
-        _map.Add("A", "B", 0, 0);
+        _map.Add("A", "B", 0, 0, 0, 0);
+        _map.Add("A", "B", 0, 0, 0, 0);
         Assert.Single(_map.GetEntries());
     }
 
     [Fact]
     public void GetEntries_ReturnsAllAdded()
     {
-        _map.Add("A", "B", 0, 0);
-        _map.Add("A", "B", 1, 0);
+        _map.Add("A", "B", 0, 0, 0, 0);
+        _map.Add("A", "B", 1, 0, 0, 0);
         Assert.Equal(2, _map.GetEntries().Count);
     }
 }

@@ -10,11 +10,11 @@ public class CollisionDetector : ICollisionDetector
     }
 
     public bool Collides(ICollidable a, ICollidable b)
-        => CollidesAt(a.GetShapeId(), b.GetShapeId(), a.GetPosition(), b.GetPosition())
-        || CollidesAt(a.GetShapeId(), b.GetShapeId(),
-               a.GetPosition() + a.GetVelocity(),
-               b.GetPosition() + b.GetVelocity());
-
-    private bool CollidesAt(string shapeA, string shapeB, Vector posA, Vector posB)
-        => _map.Contains(shapeA, shapeB, posB[0] - posA[0], posB[1] - posA[1]);
+    {
+        int relX = b.GetPosition()[0] - a.GetPosition()[0];
+        int relY = b.GetPosition()[1] - a.GetPosition()[1];
+        int relVX = b.GetVelocity()[0] - a.GetVelocity()[0];
+        int relVY = b.GetVelocity()[1] - a.GetVelocity()[1];
+        return _map.Contains(a.GetShapeId(), b.GetShapeId(), relX, relY, relVX, relVY);
+    }
 }

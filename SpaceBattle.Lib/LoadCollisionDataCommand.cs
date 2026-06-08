@@ -18,6 +18,6 @@ public class LoadCollisionDataCommand : ICommand
         var entries = JsonSerializer.Deserialize<List<CollisionEntry>>(File.ReadAllText(_path),
             new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
         foreach (var e in entries)
-            _map.Add(e.ShapeA, e.ShapeB, e.RelX, e.RelY);
+            _map.Add(e.ShapeA, e.ShapeB, e.RelX, e.RelY, e.RelVX, e.RelVY);
     }
 }
