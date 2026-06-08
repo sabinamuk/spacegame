@@ -61,7 +61,6 @@ public class SweptCollisionDetectorTests
     [Fact]
     public void Collides_ObjectsPassEachOther_ReturnsFalse()
     {
-       
         var detector = MakeDetector(SingleCell("A"), SingleCell("B"));
 
         var a = MakeCollidable("A", 0, 0, 3, 0);
