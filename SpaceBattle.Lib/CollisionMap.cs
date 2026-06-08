@@ -2,7 +2,7 @@ namespace SpaceBattle.Lib;
 
 public class CollisionMap : ICollisionMap
 {
-    // dx → dy → dvx → HashSet<dvy>
+
     private readonly Dictionary<(string, string), Dictionary<int, Dictionary<int, Dictionary<int, HashSet<int>>>>> _data = new();
 
     public bool Contains(string shapeA, string shapeB, int dx, int dy, int dvx, int dvy)
